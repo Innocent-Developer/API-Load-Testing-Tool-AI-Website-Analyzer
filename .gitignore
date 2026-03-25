@@ -202,3 +202,88 @@ backend/logs/
 # ============================================
 .dockerignore
 docker-compose.override.yml
+
+# ============================================
+# SECRETS & CREDENTIALS (CRITICAL FOR PUBLIC REPOS)
+# ============================================
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+.ssh/
+*.gpg
+secrets/
+.credentials
+.aws/
+.gcloud/
+**/credentials.json
+**/service-account-key.json
+API_KEYS.txt
+SECRETS.txt
+.kube/
+
+# ============================================
+# PRIVATE/LOCAL CONFIGURATION
+# ============================================
+local.env
+local.*.env
+*.local.js
+*.local.py
+.localrc
+.private/
+private/
+.local/
+
+# ============================================
+# USER-SPECIFIC IDE SETTINGS
+# ============================================
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.idea/misc.xml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/shelf/
+*.swp
+*.swo
+
+# ============================================
+# REAL TEST DATA / SENSITIVE DATA
+# ============================================
+test-data/
+test_data/
+real-data/
+production-data/
+*.csv.bak
+*.json.bak
+fixtures/real-*
+
+# ============================================
+# BUILD & ENVIRONMENT ARTIFACTS
+# ============================================
+.next/out/
+.vercel/
+dist-*
+build-*
+*.tsbuildinfo
+.eslintcache
+
+# ============================================
+# DEPENDENCY LOCK FILES (Optional - Keep for reproducibility)
+# ============================================
+# Uncomment if you want to exclude lock files
+# package-lock.json
+# yarn.lock
+# poetry.lock
+
+# ============================================
+# LOCAL ONLY - GIT IGNORED BUT NOT EXCLUDED
+# ============================================
+*.DS_Store
+.vscode-server/
+.vscode-server-insiders/
+
+# ============================================
+# END OF .gitignore
+# ============================================
