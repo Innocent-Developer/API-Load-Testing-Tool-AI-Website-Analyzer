@@ -1,0 +1,204 @@
+# ============================================
+# PYTHON
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pip-cache/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv
+*.venv
+backend/venv/
+backend/.venv/
+backend/env/
+worker/venv/
+worker/.venv/
+worker/env/
+
+# ============================================
+# NODE.JS / FRONTEND
+# ============================================
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+package-lock.json
+.next/
+out/
+
+# ============================================
+# ENVIRONMENT VARIABLES
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+backend/.env.local
+worker/.env
+worker/.env.local
+frontend/.env.local
+
+# ============================================
+# DATABASE
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+mongodb/
+mongodb_data/
+data/
+
+# ============================================
+# LOGS
+# ============================================
+*.log
+logs/
+backend/*.log
+worker/*.log
+lerna-debug.log*
+
+# ============================================
+# IDE & EDITOR
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+*.code-workspace
+.eclipse
+.gradle
+*.iml
+*.iws
+
+# ============================================
+# TESTING & COVERAGE
+# ============================================
+.pytest_cache/
+backend/.pytest_cache/
+worker/.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# ============================================
+# TYPE CHECKING
+# ============================================
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.ruff_cache/
+
+# ============================================
+# OS SPECIFIC
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+Thumbs.db
+*.lnk
+
+# ============================================
+# BACKUPS & TEMP
+# ============================================
+*.bak
+*.backup
+*.swp
+*.tmp
+*~
+tmp/
+temp/
+.tmp/
+.temp/
+
+# ============================================
+# BUILD & GENERATED FILES
+# ============================================
+dist/
+build/
+*.egg-info/
+.pytest_cache/
+*.generated.py
+*.generated.js
+
+# ============================================
+# CERTIFICATES & KEYS
+# ============================================
+*.pem
+*.key
+*.crt
+*.pfx
+*.p12
+
+# ============================================
+# CACHE
+# ============================================
+.cache
+.eslintcache
+.npm
+
+# ============================================
+# TEST RESULTS
+# ============================================
+results/
+test-results/
+worker/results/
+worker/logs/
+backend/logs/
+
+# ============================================
+# DOCKER
+# ============================================
+.dockerignore
+docker-compose.override.yml

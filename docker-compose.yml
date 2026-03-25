@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: loadtesting-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: api_loadtesting
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - loadtesting_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: loadtesting-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+      - DATABASE_NAME=api_loadtesting
+      - WORKER_HOST=http://worker:8001
+      - FRONTEND_URL=http://localhost:5173
+      - ENVIRONMENT=production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - loadtesting_network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+
+  # Worker Service
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    container_name: loadtesting-worker
+    ports:
+      - "8001:8001"
+    environment:
+      - WORKER_PORT=8001
+      - BACKEND_URL=http://backend:8000
+      - ENVIRONMENT=production
+    depends_on:
+      - backend
+    networks:
+      - loadtesting_network
+    command: uvicorn main:app --host 0.0.0.0 --port 8001
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: loadtesting-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - loadtesting_network
+    command: npm run dev -- --host 0.0.0.0
+
+volumes:
+  mongodb_data:
+
+networks:
+  loadtesting_network:
+    driver: bridge
