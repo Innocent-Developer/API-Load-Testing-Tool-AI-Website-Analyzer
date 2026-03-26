@@ -1,8 +1,8 @@
 asyncio
-aiohttp==3.9.1
+aiohttp==3.10.1
 httpx==0.25.1
-pydantic==2.5.0
+pydantic==2.8.0
 python-dotenv==1.0.0
 beautifulsoup4==4.12.2
-lxml==4.9.3
+lxml==5.1.0
 aiofiles==23.2.1

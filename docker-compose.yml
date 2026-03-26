@@ -31,6 +31,7 @@ services:
       - MONGODB_URL=mongodb://mongodb:27017
       - DATABASE_NAME=api_loadtesting
       - WORKER_HOST=http://worker:8001
+      - BACKEND_CALLBACK_URL=http://backend:8000
       - FRONTEND_URL=http://localhost:5173
       - ENVIRONMENT=production
     depends_on:

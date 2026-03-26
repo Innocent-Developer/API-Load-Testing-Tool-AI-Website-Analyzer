@@ -5,7 +5,7 @@ Handles MongoDB connection management and CRUD operations.
 
 import logging
 from typing import Optional, List, Dict, Any
-from motor.motor_asyncio import AsyncClient, AsyncDatabase
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from pymongo import ASCENDING, DESCENDING
 from contextlib import asynccontextmanager
 from config import settings
@@ -13,14 +13,14 @@ from config import settings
 logger = logging.getLogger(__name__)
 
 # Global database instance
-_db: Optional[AsyncDatabase] = None
+_db: Optional[AsyncIOMotorDatabase] = None
 
 
 async def connect_db():
     """Initialize MongoDB connection."""
     global _db
     try:
-        client = AsyncClient(settings.MONGODB_URL)
+        client = AsyncIOMotorClient(settings.MONGODB_URL)
         _db = client[settings.DATABASE_NAME]
         
         # Test connection
@@ -39,12 +39,12 @@ async def connect_db():
 async def disconnect_db():
     """Close MongoDB connection."""
     global _db
-    if _db:
+    if _db is not None:
         _db.client.close()
         logger.info("✓ MongoDB disconnected")
 
 
-async def get_db() -> AsyncDatabase:
+async def get_db() -> AsyncIOMotorDatabase:
     """Get database instance."""
     if _db is None:
         raise RuntimeError("Database not initialized. Call connect_db() first.")

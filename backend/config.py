@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     # Services
     WORKER_HOST: str = "http://localhost:8001"
     FRONTEND_URL: str = "http://localhost:5173"
+    BACKEND_CALLBACK_URL: str = "http://localhost:8000"
     
     # Pagination
     DEFAULT_PAGE_SIZE: int = 20

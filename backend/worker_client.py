@@ -7,6 +7,8 @@ import logging
 import httpx
 import asyncio
 from config import settings
+from database_saas import update_test_status
+from bson import ObjectId
 
 logger = logging.getLogger(__name__)
 
@@ -19,23 +21,21 @@ async def submit_test_to_worker(test_id: str, max_retries: int = 3):
         test_id: ID of the test to execute
         max_retries: Maximum retries on failure
     """
-    from database import get_db, update_test_status
-    from models import TestStatus
+    from database_saas import get_test
     
     retry_count = 0
     
     while retry_count < max_retries:
         try:
             # Get test from database
-            db = await get_db()
-            test = await db["tests"].find_one({"_id": __import__("bson").ObjectId(test_id)})
+            test = await get_test(test_id)
             
             if not test:
                 logger.error(f"Test not found: {test_id}")
                 return
             
             # Update status to running
-            await update_test_status(test_id, TestStatus.RUNNING)
+            await update_test_status(test_id, "running")
             
             # Submit to worker
             async with httpx.AsyncClient(timeout=10.0) as client:
@@ -44,28 +44,33 @@ async def submit_test_to_worker(test_id: str, max_retries: int = 3):
                     json={
                         "test_id": test_id,
                         "config": test["config"],
-                        "callback_url": f"http://backend:8000/api/tests/{test_id}"
-                    }
+                        "callback_url": f"{settings.BACKEND_CALLBACK_URL}/api/tests/{test_id}/result"
+                    },
+                    timeout=10.0
                 )
                 
                 if response.status_code == 202:
-                    logger.info(f"Test submitted to worker: {test_id}")
+                    logger.info(f"✓ Test submitted to worker: {test_id}")
                     return
                 else:
                     logger.error(f"Worker rejected test (status {response.status_code}): {response.text}")
                     retry_count += 1
-                    await asyncio.sleep(2 ** retry_count)  # Exponential backoff
+                    if retry_count < max_retries:
+                        await asyncio.sleep(2 ** retry_count)  # Exponential backoff
         
-        except httpx.ConnectError:
-            logger.error(f"Failed to connect to worker. Retry {retry_count + 1}/{max_retries}")
+        except httpx.ConnectError as e:
+            logger.error(f"✗ Failed to connect to worker (Retry {retry_count + 1}/{max_retries}): {str(e)}")
             retry_count += 1
-            await asyncio.sleep(2 ** retry_count)
+            if retry_count < max_retries:
+                await asyncio.sleep(2 ** retry_count)
         
         except Exception as e:
-            logger.error(f"Error submitting test to worker: {e}")
+            logger.error(f"✗ Error submitting test to worker: {e}")
             retry_count += 1
-            await asyncio.sleep(2 ** retry_count)
+            if retry_count < max_retries:
+                await asyncio.sleep(2 ** retry_count)
     
     # All retries failed
-    logger.error(f"Failed to submit test after {max_retries} retries: {test_id}")
-    await update_test_status(test_id, TestStatus.FAILED)
+    logger.error(f"✗ Failed to submit test after {max_retries} retries: {test_id}")
+    await update_test_status(test_id, "failed")
+

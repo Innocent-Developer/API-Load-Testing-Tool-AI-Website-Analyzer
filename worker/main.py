@@ -53,7 +53,7 @@ async def health_check():
 
 # ==================== Test Execution ====================
 
-@app.post("/execute")
+@app.post("/execute", status_code=202)
 async def execute_test(request_data: dict, background_tasks: BackgroundTasks):
     """
     Endpoint for backend to submit test jobs.
@@ -85,7 +85,7 @@ async def execute_test(request_data: dict, background_tasks: BackgroundTasks):
         
         logger.info(f"Test queued: {test_id}")
         
-        return {"status": "accepted", "test_id": test_id}, 202
+        return {"status": "accepted", "test_id": test_id}
     
     except Exception as e:
         logger.error(f"Error queuing test: {e}")

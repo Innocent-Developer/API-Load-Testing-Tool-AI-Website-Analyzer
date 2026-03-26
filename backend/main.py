@@ -7,7 +7,7 @@ import logging
 import json
 from datetime import datetime
 from typing import Set, Dict
-from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import asyncio
@@ -126,23 +126,11 @@ async def create_test(request: CreateTestRequest, background_tasks: BackgroundTa
         Created test with ID
     """
     try:
-        # Build test config
-        urls = [
-            URLConfig(
-                url=url["url"],
-                method=HTTPMethod(url.get("method", "GET")),
-                weight=url.get("weight", 1.0),
-                timeout=url.get("timeout", 10),
-                headers=url.get("headers", {}),
-                body=url.get("body")
-            )
-            for url in request.urls
-        ]
-        
+        # Pydantic already validated the request, including urls
         config = LoadTestConfig(
             name=request.name,
             description=request.description,
-            urls=urls,
+            urls=request.urls,
             duration=request.duration,
             concurrency=request.concurrency,
             ramp_up=request.ramp_up,
@@ -303,7 +291,7 @@ async def delete_test(test_id: str):
 # ==================== WebSocket ====================
 
 @app.websocket("/ws/tests/{test_id}")
-async def websocket_test_endpoint(test_id: str, websocket):
+async def websocket_test_endpoint(test_id: str, websocket: WebSocket):
     """
     WebSocket endpoint for real-time test updates.
     Broadcasts metrics and status changes to connected clients.
